@@ -1,0 +1,15 @@
+{
+  "name": "ARFA Outlet & Shop",
+  "short_name": "ARFA Shop",
+  "start_url": "Arfa Shop_3.html",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#03ac0c",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3081/3081559.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

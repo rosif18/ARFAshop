@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARFA OUTLET / SHOP - Manajemen Terpusat Pelanggan, Pesanan, PLN & Saldo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#03ac0c">
+    
+    <!-- Pustaka Html2Canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        :root {
+            --tokopedia-green: #03ac0c;
+            --tokopedia-green-hover: #028a09;
+            --bg-main: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --radius: 18px;
+            --transition: all 0.25s ease-in-out;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); padding: 16px 12px; min-height: 100vh; display: flex; flex-direction: column; }
+        .container { max-width: 1200px; margin: auto; width: 100%; padding-bottom: 25px; }
+
+        header { 
+            background: linear-gradient(135deg, #03ac0c, #028a09); 
+            color: white; 
+            padding: 22px 18px; 
+            border-radius: var(--radius); 
+            margin-bottom: 16px; 
+            box-shadow: 0 8px 20px rgba(3, 172, 12, 0.22);
+            text-align: center;
+        }
+        header h1 { font-size: 21px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.3px; }
+        header p { color: rgba(255, 255, 255, 0.92); font-size: 12px; margin-top: 5px; }
+
+        .info-banner {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 11.5px;
+            font-weight: 500;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title { font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; padding-left: 2px; display: flex; align-items: center; gap: 6px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+        @media(max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } }
+        .stat-card { background: white; padding: 14px; border-radius: var(--radius); box-shadow: 0 3px 10px rgba(0,0,0,0.03); border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; cursor: pointer; transition: var(--transition); }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); border-color: var(--tokopedia-green); }
+        .stat-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 17px; color: white; flex-shrink: 0; }
+        .stat-info { overflow: hidden; }
+        .stat-info h4 { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .stat-info h2 { font-size: 13.5px; font-weight: 700; color: var(--text-main); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .stat-info small { font-size: 10px; color: var(--tokopedia-green); font-weight: 600; display: block; margin-top: 1px; }
+
+        .menu-cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 10px; }
+        @media(min-width: 768px) { .menu-cards-grid { grid-template-columns: repeat(4, 1fr); } }
+        .menu-card { background: white; padding: 16px 14px; border-radius: var(--radius); border: 1px solid var(--border); cursor: pointer; display: flex; flex-direction: column; gap: 10px; transition: var(--transition); box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .menu-card:hover { border-color: var(--tokopedia-green); background: #f0fdf4; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(3, 172, 12, 0.1); }
+        .menu-card-top { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .menu-card-icon { width: 44px; height: 44px; border-radius: 12px; background: #ecfdf5; color: var(--tokopedia-green); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; transition: var(--transition); }
+        .menu-card:hover .menu-card-icon { background: var(--tokopedia-green); color: white; }
+        .menu-card-info h3 { font-size: 13.5px; font-weight: 700; color: var(--text-main); }
+        .menu-card-info p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+        .menu-card.ledger-full { grid-column: 1 / -1; background: #eef2ff; border-color: #c7d2fe; flex-direction: row; align-items: center; }
+        .menu-card.ledger-full .menu-card-icon { background: #4f46e5; color: white; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .input-group input, .input-group select, .input-group textarea { padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background: #fff; }
+
+        #creditPanel { display: none; background: #fdf2f8; border: 1.5px dashed #f472b6; padding: 18px; border-radius: 10px; margin-bottom: 15px; }
+        .credit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+        .credit-summary { margin-top: 12px; padding-top: 10px; border-top: 1px solid #fbcfe8; display: flex; flex-wrap: wrap; gap: 15px; font-size: 13px; font-weight: 600; }
+
+        .btn-action { background: var(--tokopedia-green); color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; box-shadow: 0 4px 12px rgba(3, 172, 12, 0.25); transition: var(--transition); text-decoration: none; }
+        .btn-action:hover { background: var(--tokopedia-green-hover); transform: translateY(-1px); }
+
+        .loading-container { display: none; align-items: center; gap: 10px; color: var(--tokopedia-green); font-weight: 600; font-size: 14px; margin-left: 15px; }
+        .spinner { width: 20px; height: 20px; border: 3px solid rgba(3, 172, 12, 0.2); border-top-color: var(--tokopedia-green); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 10px; }
+        .modal-content { background: white; padding: 16px; border-radius: 14px; width: 100%; max-width: 750px; box-shadow: 0 15px 30px rgba(0,0,0,0.2); animation: scaleUp 0.25s ease; max-height: 88vh; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-content.form-modal { width: 720px; }
+        .modal-content.small { width: 480px; }
+        .modal-content.wide { width: 1150px; max-width: 95vw; }
+        @keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { font-size: 15px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px solid var(--bg-main); padding-bottom: 8px; flex-shrink: 0; }
+        .modal-body { overflow-y: auto; max-height: calc(88vh - 60px); padding-right: 4px; flex-grow: 1; }
+        .close-modal { cursor: pointer; font-size: 24px; color: var(--text-muted); padding: 0 5px; }
+
+        .btn-edit { background: #0284c7; color: white; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+
+        .ledger-table { width: 100%; border-collapse: collapse; font-size: 10px; background: #fff; }
+        .ledger-table th, .ledger-table td { border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; vertical-align: top; }
+        .ledger-table th { background: #f1f5f9; color: #1e293b; font-weight: 700; }
+
+        #toast { visibility: hidden; position: fixed; bottom: 25px; right: 25px; background: #1e293b; color: white; padding: 14px 22px; border-radius: 10px; z-index: 2000; font-size: 14px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; }
+        #toast.show { visibility: visible; animation: fadeInOut 3.5s; }
+        @keyframes fadeInOut { 0% {opacity: 0; transform: translateY(20px);} 15% {opacity: 1; transform: translateY(0);} 85% {opacity: 1; transform: translateY(0);} 100% {opacity: 0; transform: translateY(20px);} }
+
+        @media print {
+            @page { size: 330mm 210mm landscape; margin: 10mm; }
+            body * { visibility: hidden; }
+            #printableLedgerArea, #printableLedgerArea * { visibility: visible; }
+            #printableLedgerArea { position: absolute; left: 0; top: 0; width: 100%; background: white; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><i class="fa-solid fa-store"></i> ARFA OUTLET / SHOP</h1>
+        <p>Sistem Terpusat Master Data Pelanggan, Pesanan, PLN & Saldo (Cloud Google Drive Sync)</p>
+    </header>
+
+    <div class="info-banner">
+        <i class="fa-solid fa-circle-info" style="font-size: 14px; color: #059669;"></i>
+        <span><b>Info Sistem:</b> Sinkronisasi otomatis ke Google Drive aktif (Multi-Perangkat) dengan cadangan lokal mandiri.</span>
+    </div>
+
+<div style="display: flex; gap: 8px; margin-top: 10px;">
+    <button class="btn-action" style="background: #4f46e5; font-size: 11px; padding: 6px 10px;" onclick="exportBackupJson()"><i class="fa-solid fa-download"></i> Backup JSON</button>
+    <label class="btn-action" style="background: #0284c7; font-size: 11px; padding: 6px 10px; cursor: pointer; margin-bottom: 0;">
+        <i class="fa-solid fa-upload"></i> Restore JSON <input type="file" id="importJsonFile" accept=".json" onchange="importBackupJson(event)" style="display: none;">
+    </label>
+</div>
+
+    <!-- DASHBOARD CARD STATISTIK -->
+    <div class="section-title"><i class="fa-solid fa-chart-pie" style="color: var(--tokopedia-green);"></i> Ringkasan Keuangan</div>
+    <div class="stats-grid">
+        <div class="stat-card" onclick="openStatTableModal('omset')">
+            <div class="stat-icon" style="background: #03ac0c;"><i class="fa-solid fa-wallet"></i></div>
+            <div class="stat-info">
+                <h4>Total Omset</h4>
+                <h2 id="statOmset">Rp 0</h2>
+                <small id="statOmsetMonth">Omset bulan ini</small>
+            </div>
+        </div>
+        <div class="stat-card" onclick="openStatTableModal('belumLunas')">
+            <div class="stat-icon" style="background: #ef4444;"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+            <div class="stat-info">
+                <h4>Kredit & Piutang</h4>
+                <h2 id="statBelumLunas">Rp 0</h2>
+                <small id="statBelumLunasCount">0 Order belum lunas</small>
+            </div>
+        </div>
+        <div class="stat-card" onclick="openBalanceModal()">
+            <div class="stat-icon" style="background: #0ea5e9;"><i class="fa-solid fa-piggy-bank"></i></div>
+            <div class="stat-info">
+                <h4>Total Saldo</h4>
+                <h2 id="statTotalSaldo">Rp 0</h2>
+                <small>Kelola saldo</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARD MENU UTAMA NAVIGATION -->
+    <div class="section-title" style="margin-top: 6px;"><i class="fa-solid fa-th-large" style="color: var(--tokopedia-green);"></i> Menu Utama Layanan</div>
+    <div class="menu-cards-grid">
+        <div class="menu-card" onclick="openCustomerModal()">
+            <div class="menu-card-top">
+                <div class="menu-card-icon"><i class="fa-solid fa-address-book"></i></div>
+            </div>
+            <div class="menu-card-info">
+                <h3>1. Pelanggan</h3>
+                <p>Master Pelanggan</p>
+            </div>
+        </div>
+        <div class="menu-card" onclick="openInputModal()">
+            <div class="menu-card-top">
+                <div class="menu-card-icon"><i class="fa-solid fa-cart-plus"></i></div>
+            </div>
+            <div class="menu-card-info">
+                <h3>2. Pesanan</h3>
+                <p>Catat order & cicil</p>
+            </div>
+        </div>
+        <div class="menu-card" onclick="openPlnModal()">
+            <div class="menu-card-top">
+                <div class="menu-card-icon"><i class="fa-solid fa-bolt"></i></div>
+            </div>
+            <div class="menu-card-info">
+                <h3>3. Tagihan PLN</h3>
+                <p>Cek Tokopedia & WA</p>
+            </div>
+        </div>
+        <div class="menu-card ledger-full" onclick="openLedgerModal()">
+            <div class="menu-card-icon"><i class="fa-solid fa-book-open"></i></div>
+            <div class="menu-card-info">
+                <h3>4. Buku Arus Kas / Rekening Koran</h3>
+                <p>Laporan komprehensif siap cetak F4 Landscape</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL BUKU ARUS KAS / REKENING KORAN -->
+<div id="ledgerModal" class="modal">
+    <div class="modal-content wide">
+        <div class="modal-header no-print">
+            <span><i class="fa-solid fa-book-open" style="color: #4f46e5;"></i> Buku Arus Kas & Rekening Koran Komprehensif</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn-action" style="padding: 6px 12px; font-size: 12px; background: #4f46e5;" onclick="window.print()"><i class="fa-solid fa-print"></i> Cetak / PDF / Printer</button>
+                <span class="close-modal" onclick="closeLedgerModal()">&times;</span>
+            </div>
+        </div>
+        <div class="modal-body" id="printableLedgerArea">
+            <div class="no-print" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
+                <div class="input-group" style="flex: 1; min-width: 140px;">
+                    <label style="font-size: 11px;">Filter Tipe Pelanggan</label>
+                    <select id="ledgerFilterType" onchange="renderLedgerTable()" style="padding: 7px; font-size: 12px;">
+                        <option value="ALL">Semua Pelanggan</option>
+                        <option value="LISTRIK">Pelanggan Listrik PLN</option>
+                        <option value="UMUM">Pelanggan Umum</option>
+                    </select>
+                </div>
+                <div class="input-group" style="flex: 1; min-width: 140px;">
+                    <label style="font-size: 11px;">Filter Status Lunas</label>
+                    <select id="ledgerFilterStatus" onchange="renderLedgerTable()" style="padding: 7px; font-size: 12px;">
+                        <option value="ALL">Semua Status</option>
+                        <option value="LUNAS">Lunas Saja</option>
+                        <option value="BELUM_LUNAS">Belum Lunas Saja</option>
+                    </select>
+                </div>
+                <div class="input-group" style="flex: 1; min-width: 140px;">
+                    <label style="font-size: 11px;">Filter Bulan & Tahun</label>
+                    <input type="month" id="ledgerFilterMonth" onchange="renderLedgerTable()" style="padding: 6px 10px; font-size: 12px;">
+                </div>
+                <div class="input-group" style="flex: 1; min-width: 140px;">
+                    <label style="font-size: 11px;">Urutkan (Sorting)</label>
+                    <select id="ledgerSortBy" onchange="renderLedgerTable()" style="padding: 7px; font-size: 12px;">
+                        <option value="name_asc">Nama Pelanggan (A-Z)</option>
+                        <option value="saldo_desc">Sisa Saldo Terbesar</option>
+                        <option value="piutang_desc">Kredit / Piutang Terbesar</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 15px;">
+                <h3 style="font-size: 15px; font-weight: 700; color: #1e293b;">REKENING KORAN & BUKU ARUS KAS ARFA SHOP</h3>
+            </div>
+
+            <table class="ledger-table">
+                <thead>
+                    <tr>
+                        <th style="width: 3%;">No</th>
+                        <th style="width: 14%;">Nama Pelanggan</th>
+                        <th style="width: 7%;">Tipe</th>
+                        <th style="width: 35%;">Rincian Pesanan</th>
+                        <th style="width: 8%;">Kredit / Piutang</th>
+                        <th style="width: 8%;">Tagihan PLN</th>
+                        <th style="width: 8%;">Saldo Titipan</th>
+                        <th style="width: 9%;">Sisa Saldo</th>
+                        <th style="width: 8%;">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="ledgerTableBody">
+                    <tr><td colspan="9" style="text-align: center; padding: 20px;">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL POPUP UTAMA (DATA PELANGGAN) -->
+<div id="customerModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modalTitleText"><i class="fa-solid fa-address-book" style="color: var(--tokopedia-green);"></i> Data Pelanggan</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <div id="modalHeaderAction" style="display: flex; gap: 6px;">
+                    <button class="btn-action" style="padding: 6px 12px; font-size: 12px; background: #10b981;" onclick="openAddCustomerModal()"><i class="fa-solid fa-user-plus"></i> Tambah</button>
+                    <button class="btn-action" style="padding: 6px 12px; font-size: 12px;" onclick="fetchAllData()"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+                <span class="close-modal" onclick="closeCustomerModal()">&times;</span>
+            </div>
+        </div>
+        
+        <div class="modal-body">
+            <table style="width: 100%;">
+                <thead id="dynamicTableHead"></thead>
+                <tbody id="customerTableBody">
+                    <tr>
+                        <td style="text-align: center; padding: 25px; color: var(--text-muted);">
+                            Memuat data...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TAMBAH PELANGGAN BARU -->
+<div id="addCustomerModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-user-plus" style="color: var(--tokopedia-green);"></i> Form Pelanggan Baru</span>
+            <span class="close-modal" onclick="closeAddCustomerModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addCustomerForm" onsubmit="saveNewCustomer(event)">
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nama Lengkap Pelanggan</label>
+                    <input type="text" id="newCustName" placeholder="Contoh: Ibu Nurul" required>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nomor WhatsApp</label>
+                    <div style="display: flex; gap: 6px;">
+    <input type="text" id="newCustWa" placeholder="Contoh: 081234567890" required style="flex: 1;">
+    <button type="button" class="btn-action" style="padding: 0 12px; background: #25d366; font-size: 13px;" onclick="pickContactFromPhone()" title="Pilih dari Kontak HP"><i class="fa-solid fa-address-book"></i></button>
+</div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nomor IDPEL Listrik</label>
+                    <input type="text" id="newCustIdpel" placeholder="Contoh: 54100293819">
+                </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Nama Pemilik IDPEL PLN</label>
+                    <input type="text" id="newCustNamaPemilik" placeholder="Sesuai meteran PLN">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; justify-content: center;"><i class="fa-solid fa-check"></i> Simpan Pelanggan</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL UBAH / EDIT PELANGGAN -->
+<div id="editCustomerModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-user-pen" style="color: var(--tokopedia-green);"></i> Ubah Data Pelanggan</span>
+            <span class="close-modal" onclick="closeEditCustomerModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editCustomerForm" onsubmit="updateCustomer(event)">
+                <input type="hidden" id="editCustIndex">
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nama Lengkap Pelanggan</label>
+                    <input type="text" id="editCustName" required>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nomor WhatsApp</label>
+                    <input type="text" id="editCustWa" required>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nomor IDPEL Listrik</label>
+                    <input type="text" id="editCustIdpel" placeholder="Kosongkan jika tidak ada">
+                </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Nama Pemilik IDPEL PLN</label>
+                    <input type="text" id="editCustNamaPemilik" placeholder="Sesuai meteran PLN">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; justify-content: center;"><i class="fa-solid fa-check"></i> Perbarui Data</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL FORM INPUT PESANAN BARU -->
+<div id="inputModal" class="modal">
+    <div class="modal-content form-modal">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-file-pen" style="color: var(--tokopedia-green);"></i> Form Pemesanan Barang</span>
+            <span class="close-modal" onclick="closeInputModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="orderForm">
+                <div class="form-grid">
+                    <div class="input-group"><label>Tanggal Transfer</label><input type="date" id="tglTransfer" required></div>
+                    <div class="input-group"><label>Nomor Order</label><input type="text" id="noOrder" placeholder="Contoh: ORD-001" required></div>
+                    <div class="input-group">
+                        <label>Pilih Pelanggan</label>
+                        <select id="selectNamaPelanggan" onchange="fillCustomerData()" required>
+                            <option value="">-- Pilih Pelanggan --</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Nomor WhatsApp</label><input type="text" id="noWa" readonly style="background: #f1f5f9;"></div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group"><label>Detail Item</label><input type="text" id="detailItem" placeholder="Pakaian / Tas" required></div>
+                    <div class="input-group"><label>Warna</label><input type="text" id="warna" placeholder="Warna"></div>
+                    <div class="input-group"><label>Size</label><input type="text" id="size" placeholder="Size / M / L"></div>
+                    <div class="input-group"><label>QTY</label><input type="number" id="qty" value="1" min="1" required oninput="calculateNet()"></div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group"><label>Brand</label><input type="text" id="brand" placeholder="Brand"></div>
+                    <div class="input-group"><label>Harga Satuan (Rp)</label><input type="number" id="hargaSatuan" placeholder="0" required oninput="calculateNet()"></div>
+                    <div class="input-group"><label>Diskon (%)</label><input type="number" id="diskon" value="0" min="0" max="100" oninput="calculateNet()"></div>
+                    <div class="input-group"><label>Ongkir (Rp)</label><input type="number" id="ongkir" value="0" oninput="calculateNet()"></div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Sistem Bayar</label>
+                        <select id="sistemBayar" onchange="toggleCreditOptions()">
+                            <option value="CASH">CASH</option>
+                            <option value="KREDIT">KREDIT</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label>Template Pesan WA</label>
+                        <select id="waTemplate">
+                            <option value="standard">Standar Profesional</option>
+                            <option value="friendly">Ramah / Santai</option>
+                            <option value="formal">Formal / Tegas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="creditPanel">
+                    <h4 style="color: #db2777; margin-bottom: 8px;"><i class="fa-solid fa-credit-card"></i> Pengaturan Cicilan Kredit</h4>
+                    <div class="form-grid" style="margin-bottom: 10px;">
+                        <div class="input-group">
+                            <label>Jumlah Cicilan</label>
+                            <select id="jumlahCicilan" onchange="generateInstallmentInputs()">
+                                <option value="2">2x Cicilan</option>
+                                <option value="3" selected>3x Cicilan</option>
+                                <option value="4">4x Cicilan</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Jatuh Tempo</label>
+                            <input type="date" id="tglJatuhTempo">
+                        </div>
+                    </div>
+                    <div class="credit-grid" id="installmentContainer"></div>
+                    <div class="credit-summary">
+                        <div>Net: <span id="summaryNet" style="color: var(--tokopedia-green);">Rp 0</span></div>
+                        <div>Dibayar: <span id="summaryPaid" style="color: #10b981;">Rp 0</span></div>
+                        <div>Sisa: <span id="summaryRemaining" style="color: #ef4444;">Rp 0</span></div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; margin-top: 20px; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-action" style="background: var(--text-muted);" onclick="closeInputModal()">Batal</button>
+                    <button type="submit" class="btn-action" id="btnSubmit"><i class="fa-solid fa-cloud-arrow-up"></i> Simpan Order</button>
+                    <div class="loading-container" id="loadingText"><div class="spinner"></div> Menyimpan...</div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TABEL TAGIHAN PLN -->
+<div id="plnModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-bolt" style="color: #10b981;"></i> Tagihan Listrik PLN</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn-action" style="padding: 6px 12px; font-size: 12px; background: #10b981;" onclick="loadPlnTable()"><i class="fa-solid fa-rotate"></i> Muat Ulang</button>
+                <span class="close-modal" onclick="closePlnModal()">&times;</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table style="width: 100%;">
+                <tbody id="plnTableBody">
+                    <tr><td style="text-align: center; padding: 25px; color: var(--text-muted);">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL POP-UP PREVIEW INVOICE & DOWNLOAD JPG -->
+<div id="invoicePreviewModal" class="modal">
+    <div class="modal-content small" style="max-width: 420px; text-align: center;">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-file-invoice" style="color: var(--tokopedia-green);"></i> Preview Invoice Tagihan</span>
+            <span class="close-modal" onclick="closeInvoiceModal()">&times;</span>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <div id="invoiceCardToCapture" style="background: #ffffff; padding: 22px 18px; border-radius: 8px; border: 1.5px solid #cbd5e1; width: 100%; text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #0f172a; box-shadow: 0 4px 6px rgba(0,0,0,0.03);">
+                <div style="text-align: center; border-bottom: 2px dashed #94a3b8; padding-bottom: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <div style="background: #eab308; color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px;"><i class="fa-solid fa-bolt"></i></div>
+                        <b style="font-size: 15px; color: #0f172a; letter-spacing: 1px;">STRUK PEMBAYARAN TAGIHAN LISTRIK</b>
+                    </div>
+                    <div style="font-size: 10px; color: #64748b; margin-top: 3px; font-family: 'Inter', sans-serif;">PT PLN (PERSERO) • www.pln.co.id</div>
+                </div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 11.5px; line-height: 1.6; color: #1e293b;">
+                    <tr><td style="width: 38%; color: #475569;">NO. REK / IDPEL</td><td style="width: 4%;">:</td><td style="width: 58%; font-weight: 600;" id="invIdpel">-</td></tr>
+                    <tr><td style="color: #475569;">NAMA</td><td>:</td><td style="font-weight: 600; text-transform: uppercase;" id="invNama">-</td></tr>
+                    <tr><td style="color: #475569;">BL / TH</td><td>:</td><td id="invBlTh">-</td></tr>
+                    <tr><td style="color: #475569;">TARIF / DAYA</td><td>:</td><td id="invTarifDaya">-</td></tr>
+                    <tr><td style="color: #475569;">STAND METER</td><td>:</td><td id="invStandMeter">-</td></tr>
+                    <tr><td style="color: #475569;">JATUH TEMPO</td><td>:</td><td id="invJatuhTempo">-</td></tr>
+                </table>
+
+                <div style="border-top: 1.5px dashed #94a3b8; margin: 10px 0;"></div>
+
+                <table style="width: 100%; border-collapse: collapse; font-size: 11.5px; line-height: 1.6; color: #1e293b;">
+                    <tr><td style="width: 55%; color: #475569;">TAGIHAN PLN</td><td style="width: 5%;">:</td><td style="width: 40%; text-align: right;" id="invRpPln">Rp 0</td></tr>
+                    <tr><td style="color: #475569;">BIAYA ADMIN</td><td>:</td><td style="text-align: right;" id="invAdmin">Rp 0</td></tr>
+                </table>
+
+                <div style="border-top: 2px solid #0f172a; border-bottom: 2px solid #0f172a; margin: 10px 0; padding: 6px 0; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 13px;">
+                    <span>TOTAL BAYAR</span>
+                    <span id="invTotal" style="color: #1e1b4b;">Rp 0</span>
+                </div>
+
+                <div style="text-align: center; font-size: 10px; color: #64748b; margin-top: 8px; font-family: 'Inter', sans-serif; line-height: 1.4;">
+                    PLN menyatakan struk ini sebagai bukti pembayaran yang sah.<br>
+                    Informasi Hubungi Call Center: <b>123</b> atau PLN Mobile.
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 5px;">
+                <button id="btnDownloadJpg" class="btn-action" style="width: 100%; justify-content: center; background: #0ea5e9; font-size: 13px; padding: 11px;" onclick="downloadInvoiceJpg()"><i class="fa-solid fa-download"></i> Download Struk JPG</button>
+                
+                <div id="waActionButtons" style="display: none; flex-direction: column; gap: 6px; width: 100%;">
+                    <div style="display: flex; gap: 6px; width: 100%;">
+                        <button class="btn-action" style="flex: 1; justify-content: center; background: #25d366; font-size: 12px; padding: 10px;" onclick="sendWaMessage('standard')"><i class="fa-brands fa-whatsapp"></i> Kirim WA</button>
+                        <button class="btn-action" style="flex: 1; justify-content: center; background: #075e54; font-size: 12px; padding: 10px;" onclick="sendWaMessage('business')"><i class="fa-brands fa-whatsapp"></i> WA Business</button>
+                    </div>
+                </div>
+
+                <button class="btn-action" style="background: var(--text-muted); font-size: 12px; padding: 8px; justify-content: center;" onclick="closeInvoiceModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SALDO & TITIPAN -->
+<div id="balanceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-piggy-bank" style="color: #0ea5e9;"></i> Saldo Titipan Pelanggan</span>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn-action" style="padding: 6px 12px; font-size: 12px; background: #0ea5e9;" onclick="openAddBalanceModal()"><i class="fa-solid fa-plus-circle"></i> Tambah / Tarik</button>
+                <span class="close-modal" onclick="closeBalanceModal()">&times;</span>
+            </div>
+        </div>
+        <div class="modal-body">
+            <table style="width: 100%;">
+                <tbody id="balanceTableBody">
+                    <tr><td style="text-align: center; padding: 25px; color: var(--text-muted);">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL TAMBAH / TARIK SALDO -->
+<div id="addBalanceModal" class="modal">
+    <div class="modal-content small">
+        <div class="modal-header">
+            <span><i class="fa-solid fa-wallet" style="color: #0ea5e9;"></i> Mutasi Saldo Pelanggan</span>
+            <span class="close-modal" onclick="closeAddBalanceModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addBalanceForm" onsubmit="saveBalanceMutation(event)">
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Pilih Pelanggan</label>
+                    <select id="balanceSelectCust" required>
+                        <option value="">-- Pilih Pelanggan --</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Jenis Mutasi</label>
+                    <select id="balanceType" required>
+                        <option value="MASUK">Setor / Titip Saldo (+)</option>
+                        <option value="KELUAR">Tarik / Potong Saldo (-)</option>
+                    </select>
+                </div>
+                <div class="input-group" style="margin-bottom: 12px;">
+                    <label>Nominal (Rp)</label>
+                    <input type="number" id="balanceNominal" placeholder="Contoh: 50000" min="1" required>
+                </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <label>Keterangan</label>
+                    <input type="text" id="balanceKeterangan" placeholder="Contoh: Sisa kembalian">
+                </div>
+                <button type="submit" class="btn-action" style="width: 100%; justify-content: center; background: #0ea5e9;"><i class="fa-solid fa-check"></i> Simpan Mutasi</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="toast"><i id="toastIcon" class="fa-solid fa-circle-check"></i> <span id="toastMessage">Pesan berhasil</span></div>
+
+<script>
+    // URL Deployment Google Apps Script Anda
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJkD6uf3G_OBXLoFtgtPOkfI_DFot-pH9BsI46qVr633Zl-jXhNtPAvUSHI-TZIoNTAg/exec";
+
+    let globalOrders = [];
+    let masterCustomers = [];
+    let globalBalances = [];
+    let globalPlnBills = [];
+    let activeShareData = { wa: "", text: "" };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        generateInstallmentInputs();
+        fetchAllData();
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById("tglTransfer").value = todayStr;
+        const currentMonthStr = todayStr.substring(0, 7);
+        const ledgerMonthEl = document.getElementById("ledgerFilterMonth");
+        if(ledgerMonthEl) ledgerMonthEl.value = currentMonthStr;
+    });
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById("toast");
+        const toastIcon = document.getElementById("toastIcon");
+        document.getElementById("toastMessage").innerText = message;
+        toast.className = "show " + type;
+        toastIcon.className = type === 'success' ? "fa-solid fa-circle-check" : "fa-solid fa-circle-exclamation";
+        setTimeout(() => { toast.className = ""; }, 3500);
+    }
+
+    // --- SINKRONISASI CLOUD GOOGLE DRIVE & LOCALSTORAGE BACKUP ---
+    function fetchAllData() {
+        showToast("Menyinkronkan data dari Cloud...", "success");
+        
+        fetch(GOOGLE_SCRIPT_URL)
+        .then(response => response.json())
+        .then(data => {
+            masterCustomers = data.customers || [];
+            globalOrders = data.orders || [];
+            globalBalances = data.balances || [];
+            globalPlnBills = data.plnBills || [];
+
+            // Simpan juga ke cadangan internal (LocalStorage) untuk mode offline
+            localStorage.setItem("arfa_customers", JSON.stringify(masterCustomers));
+            localStorage.setItem("arfa_orders", JSON.stringify(globalOrders));
+            localStorage.setItem("arfa_balances", JSON.stringify(globalBalances));
+            localStorage.setItem("arfa_plnbills", JSON.stringify(globalPlnBills));
+
+            renderMasterCustomerTable();
+            updateDashboardStats(globalOrders);
+            showToast("Data sinkron dengan Google Drive!", "success");
+        })
+        .catch(error => {
+            console.warn("Gagal terhubung ke Cloud, beralih ke Mode Cadangan Lokal:", error);
+            masterCustomers = JSON.parse(localStorage.getItem("arfa_customers")) || [];
+            globalOrders = JSON.parse(localStorage.getItem("arfa_orders")) || [];
+            globalBalances = JSON.parse(localStorage.getItem("arfa_balances")) || [];
+            globalPlnBills = JSON.parse(localStorage.getItem("arfa_plnbills")) || [];
+
+            renderMasterCustomerTable();
+            updateDashboardStats(globalOrders);
+            showToast("Menggunakan data cadangan lokal (Offline).", "error");
+        });
+    }
+
+    function syncToCloud() {
+        const cloudPayload = {
+            customers: masterCustomers,
+            orders: globalOrders,
+            balances: globalBalances,
+            plnBills: globalPlnBills
+        };
+
+        // Simpan backup lokal dulu
+        localStorage.setItem("arfa_customers", JSON.stringify(masterCustomers));
+        localStorage.setItem("arfa_orders", JSON.stringify(globalOrders));
+        localStorage.setItem("arfa_balances", JSON.stringify(globalBalances));
+        localStorage.setItem("arfa_plnbills", JSON.stringify(globalPlnBills));
+
+        // Kirim rewrite ke Google Drive via Apps Script
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(cloudPayload)
+        })
+        .then(() => {
+            console.log("Data berhasil di-update ke Google Drive.");
+        })
+        .catch(err => {
+            console.error("Gagal update ke cloud:", err);
+        });
+    }
+
+    function openCustomerModal() { 
+        document.getElementById("modalTitleText").innerHTML = `<i class="fa-solid fa-address-book" style="color: var(--tokopedia-green);"></i> Data Pelanggan`;
+        document.getElementById("modalHeaderAction").style.display = "flex";
+        renderMasterCustomerTable(); 
+        document.getElementById("customerModal").style.display = "flex"; 
+    }
+    function closeCustomerModal() { document.getElementById("customerModal").style.display = "none"; }
+
+    function openAddCustomerModal() { document.getElementById("addCustomerModal").style.display = "flex"; }
+    function closeAddCustomerModal() { document.getElementById("addCustomerModal").style.display = "none"; }
+
+    function openEditCustomerModal(index) {
+        const cust = masterCustomers[index];
+        document.getElementById("editCustIndex").value = index;
+        document.getElementById("editCustName").value = cust.name || "";
+        document.getElementById("editCustWa").value = cust.wa || "";
+        document.getElementById("editCustIdpel").value = (cust.idpel && cust.idpel !== "-") ? cust.idpel : "";
+        document.getElementById("editCustNamaPemilik").value = cust.namaPemilikIdpel || "";
+        document.getElementById("editCustomerModal").style.display = "flex";
+    }
+    function closeEditCustomerModal() { document.getElementById("editCustomerModal").style.display = "none"; }
+
+    function openInputModal() { 
+        if (masterCustomers.length === 0) {
+            showToast("Data pelanggan masih kosong! Tambah pelanggan dulu.", "error");
+            openCustomerModal();
+            return;
+        }
+        populateCustomerDropdown(); 
+        document.getElementById("inputModal").style.display = "flex"; 
+    }
+    function closeInputModal() { document.getElementById("inputModal").style.display = "none"; }
+
+    function openPlnModal() { loadPlnTable(); document.getElementById("plnModal").style.display = "flex"; }
+    function closePlnModal() { document.getElementById("plnModal").style.display = "none"; }
+
+    function openBalanceModal() { renderBalanceTable(); document.getElementById("balanceModal").style.display = "flex"; }
+    function closeBalanceModal() { document.getElementById("balanceModal").style.display = "none"; }
+
+    function openLedgerModal() { renderLedgerTable(); document.getElementById("ledgerModal").style.display = "flex"; }
+    function closeLedgerModal() { document.getElementById("ledgerModal").style.display = "none"; }
+
+    function saveNewCustomer(e) {
+        e.preventDefault();
+        const name = document.getElementById("newCustName").value.trim();
+        const wa = document.getElementById("newCustWa").value.trim();
+        const idpel = document.getElementById("newCustIdpel").value.trim() || "-";
+        const namaPemilik = document.getElementById("newCustNamaPemilik").value.trim() || name;
+
+        masterCustomers.push({ name: name, wa: wa, idpel: idpel, namaPemilikIdpel: namaPemilik });
+        syncToCloud(); // Simpan otomatis ke cloud & local
+
+        showToast("Pelanggan berhasil disimpan!", "success");
+        document.getElementById("addCustomerForm").reset();
+        closeAddCustomerModal();
+        renderMasterCustomerTable();
+    }
+
+    function updateCustomer(e) {
+        e.preventDefault();
+        const index = document.getElementById("editCustIndex").value;
+        const name = document.getElementById("editCustName").value.trim();
+        const wa = document.getElementById("editCustWa").value.trim();
+        const idpel = document.getElementById("editCustIdpel").value.trim() || "-";
+        const namaPemilik = document.getElementById("editCustNamaPemilik").value.trim() || name;
+
+        masterCustomers[index] = { name: name, wa: wa, idpel: idpel, namaPemilikIdpel: namaPemilik };
+        syncToCloud(); // Simpan otomatis ke cloud & local
+        
+        renderMasterCustomerTable();
+        closeEditCustomerModal();
+        showToast("Data pelanggan berhasil diperbarui!", "success");
+    }
+
+    function saveBalanceMutation(e) {
+        e.preventDefault();
+        const namaPelanggan = document.getElementById("balanceSelectCust").value;
+        const jenisMutasi = document.getElementById("balanceType").value;
+        const jumlah = parseFloat(document.getElementById("balanceNominal").value) || 0;
+        const keterangan = document.getElementById("balanceKeterangan").value.trim() || "-";
+
+        globalBalances.push({
+            timestamp: new Date().toISOString(),
+            namaPelanggan: namaPelanggan,
+            jenisMutasi: jenisMutasi,
+            jumlah: jumlah,
+            keterangan: keterangan
+        });
+        syncToCloud(); // Simpan otomatis ke cloud & local
+
+        showToast("Mutasi saldo berhasil dicatat!", "success");
+        document.getElementById("addBalanceForm").reset();
+        closeAddBalanceModal();
+        updateDashboardStats(globalOrders);
+    }
+
+    function openStatTableModal(type) {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+        const modalHeaderAction = document.getElementById("modalHeaderAction");
+        if (modalHeaderAction) modalHeaderAction.style.display = "none";
+        
+        const tbody = document.getElementById("customerTableBody");
+        const thead = document.getElementById("dynamicTableHead");
+        if (!tbody) return;
+        
+        if(thead) thead.innerHTML = "";
+        tbody.innerHTML = "";
+
+        let filtered = [];
+        let title = "";
+
+        if (type === 'omset') {
+            title = `Rincian Omset ${monthNames[currentMonth]} ${currentYear}`;
+            filtered = globalOrders.filter(o => {
+                if (!o.tglTransfer) return false;
+                let tgl = new Date(o.tglTransfer);
+                return tgl.getMonth() === currentMonth && tgl.getFullYear() === currentYear;
+            });
+        } else if (type === 'belumLunas') {
+            title = `Daftar Kredit, Piutang & Order Belum Lunas`;
+            filtered = globalOrders.filter(o => o.statusBayar === "BELUM LUNAS");
+        }
+
+        document.getElementById("modalTitleText").innerHTML = `<i class="fa-solid fa-list-check" style="color: var(--tokopedia-green);"></i> ${title}`;
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = `<tr><td style="text-align: center; padding: 25px; color: var(--text-muted);">Tidak ada data untuk kategori ini.</td></tr>`;
+        } else {
+            filtered.forEach((o, i) => {
+                let nominalVal = type === 'omset' ? (o.hargaNet || 0) : (o.remaining || 0);
+                let badgeColor = type === 'omset' ? 'var(--tokopedia-green)' : '#ef4444';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="padding: 6px 0; border: none; display: block; width: 100%;">
+                            <div style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                                <div style="font-size: 13px; font-weight: 700; color: var(--text-main);">
+                                    ${i + 1}. No. Order: ${o.noOrder}
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    👤 Pelanggan: <b>${o.namaPemesan}</b>
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    🛒 Item: <b>${o.detailItem}</b> (${o.sistemBayar})
+                                </div>
+                                <div style="font-size: 12px; color: var(--text-muted);">
+                                    📅 Tanggal: ${o.tglTransfer}
+                                </div>
+                                <div style="font-size: 13px; font-weight: 700; color: ${badgeColor}; margin-top: 4px; border-top: 1px dashed var(--border); padding-top: 4px;">
+                                    Jumlah: Rp ${nominalVal.toLocaleString('id-ID')}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        document.getElementById("customerModal").style.display = "flex";
+    }
+
+    function renderMasterCustomerTable() {
+        const thead = document.getElementById("dynamicTableHead");
+        const tbody = document.getElementById("customerTableBody");
+        if (!tbody) return;
+        if (thead) thead.innerHTML = "";
+        tbody.innerHTML = "";
+
+        if (masterCustomers.length === 0) {
+            tbody.innerHTML = `<tr><td style="text-align: center; color: var(--text-muted); padding: 25px;">Belum ada data pelanggan.</td></tr>`;
+            return;
+        }
+
+        masterCustomers.forEach((cust, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td style="padding: 6px 0; border: none; display: block; width: 100%;">
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <b style="font-size: 13px; color: var(--text-main);">${index + 1}. ${cust.name}</b>
+                                <button class="btn-edit" onclick="openEditCustomerModal(${index})"><i class="fa-solid fa-pen-to-square"></i> Ubah</button>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                📱 WA: ${cust.wa || '-'}
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                ⚡ IDPEL: ${cust.idpel || '-'} ${cust.namaPemilikIdpel ? '(' + cust.namaPemilikIdpel + ')' : ''}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function renderLedgerTable() {
+        const tbody = document.getElementById("ledgerTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+
+        if (masterCustomers.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 25px; color: var(--text-muted);">Belum ada data pelanggan.</td></tr>`;
+            return;
+        }
+
+        const filterType = document.getElementById("ledgerFilterType").value;
+        const filterStatus = document.getElementById("ledgerFilterStatus") ? document.getElementById("ledgerFilterStatus").value : "ALL";
+        const filterMonth = document.getElementById("ledgerFilterMonth") ? document.getElementById("ledgerFilterMonth").value : "";
+        const sortBy = document.getElementById("ledgerSortBy").value;
+
+        let tableRowsToRender = [];
+
+        masterCustomers.forEach(cust => {
+            let isListrik = cust.idpel && cust.idpel !== "-";
+            let tipe = isListrik ? "LISTRIK" : "UMUM";
+
+            let customerOrders = globalOrders.filter(o => {
+                if (!o.namaPemesan) return false;
+                let cleanPemesan = o.namaPemesan.split('(')[0].trim().toUpperCase();
+                let cleanCustName = cust.name.trim().toUpperCase();
+                if (cleanPemesan !== cleanCustName) return false;
+
+                if (filterMonth && o.tglTransfer) {
+                    let orderMonthStr = o.tglTransfer.substring(0, 7);
+                    if (orderMonthStr !== filterMonth) return false;
+                }
+                return true;
+            });
+
+            if (filterStatus === "LUNAS") {
+                customerOrders = customerOrders.filter(o => o.statusBayar === "LUNAS");
+            } else if (filterStatus === "BELUM_LUNAS") {
+                customerOrders = customerOrders.filter(o => o.statusBayar === "BELUM LUNAS");
+            }
+
+            let customerPln = globalPlnBills.filter(b => b.namaPelanggan.trim().toUpperCase() === cust.name.trim().toUpperCase());
+            let totalPlnBill = customerPln.reduce((sum, b) => sum + (b.nominal || 0), 0);
+            let plnText = totalPlnBill > 0 ? `Rp ${totalPlnBill.toLocaleString('id-ID')}` : "-";
+
+            let custBalance = 0;
+            globalBalances.filter(b => b.namaPelanggan.trim().toUpperCase() === cust.name.trim().toUpperCase()).forEach(b => {
+                if (b.jenisMutasi === "MASUK") custBalance += b.jumlah;
+                else if (b.jenisMutasi === "KELUAR") custBalance -= b.jumlah;
+            });
+
+            if (customerOrders.length > 0) {
+                customerOrders.forEach(o => {
+                    let netHrg = (o.hargaNet || (o.hargaSatuan * o.qty)).toLocaleString('id-ID');
+                    let statusColor = o.statusBayar === "BELUM LUNAS" ? "#ef4444" : "#10b981";
+                    let statusText = o.statusBayar === "BELUM LUNAS" ? "BELUM LUNAS" : "LUNAS";
+                    let piutangVal = o.statusBayar === "BELUM LUNAS" ? (o.remaining || 0) : 0;
+                    let rowStatusText = o.statusBayar === "BELUM LUNAS" ? "BELUM LUNAS" : "LUNAS / AMAN";
+
+                    let orderMiniTable = `
+                        <table style="width: 100%; border-collapse: collapse; font-size: 9.5px; background: #fafafa; border: 1px solid #cbd5e1; border-radius: 4px;">
+                            <tr>
+                                <td colspan="2" style="background: #f1f5f9; padding: 4px 6px; font-weight: 700; border-bottom: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>No. Order: #${o.noOrder || '1'}</span>
+                                    <span style="color: ${statusColor}; background: #fff; padding: 1px 4px; border-radius: 3px; border: 1px solid ${statusColor};">${statusText}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; width: 35%; color: #64748b; border-bottom: 1px solid #e2e8f0;">Nama Item</td>
+                                <td style="padding: 3px 6px; width: 65%; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.detailItem}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b; border-bottom: 1px solid #e2e8f0;">Brand</td>
+                                <td style="padding: 3px 6px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.brand || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b; border-bottom: 1px solid #e2e8f0;">Size / Warna</td>
+                                <td style="padding: 3px 6px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.size || '-'}&nbsp;/&nbsp;${o.warna || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b; border-bottom: 1px solid #e2e8f0;">QTY & Harga Net</td>
+                                <td style="padding: 3px 6px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.qty} pcs &bull; Rp ${netHrg}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b; border-bottom: 1px solid #e2e8f0;">Diskon & Ongkir</td>
+                                <td style="padding: 3px 6px; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.diskon || 0}% &bull; Ongkir: Rp ${(o.ongkir || 0).toLocaleString('id-ID')}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b; border-bottom: 1px solid #e2e8f0;">Sistem Pembayaran</td>
+                                <td style="padding: 3px 6px; font-weight: 600; color: #1e293b; border-bottom: 1px solid #e2e8f0;">${o.sistemBayar}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 3px 6px; color: #64748b;">Tanggal Transaksi</td>
+                                <td style="padding: 3px 6px; color: #1e293b;">${o.tglTransfer ? o.tglTransfer.split('T')[0] : '-'}</td>
+                            </tr>
+                        </table>
+                    `;
+
+                    tableRowsToRender.push({
+                        name: cust.name,
+                        wa: cust.wa || '-',
+                        idpel: cust.idpel || '-',
+                        tipe: tipe,
+                        orderDetailHtml: orderMiniTable,
+                        piutang: piutangVal,
+                        tagihanPln: plnText,
+                        saldoTitipan: custBalance >= 0 ? custBalance : 0,
+                        sisaSaldo: custBalance,
+                        status: rowStatusText,
+                        sortKeyName: cust.name
+                    });
+                });
+            } else {
+                if (filterStatus === "ALL") {
+                    tableRowsToRender.push({
+                        name: cust.name,
+                        wa: cust.wa || '-',
+                        idpel: cust.idpel || '-',
+                        tipe: tipe,
+                        orderDetailHtml: `<span style="color: #94a3b8; font-style: italic;">Tidak ada pesanan</span>`,
+                        piutang: 0,
+                        tagihanPln: plnText,
+                        saldoTitipan: custBalance >= 0 ? custBalance : 0,
+                        sisaSaldo: custBalance,
+                        status: "LUNAS / AMAN",
+                        sortKeyName: cust.name
+                    });
+                }
+            }
+        });
+
+        if (filterType !== "ALL") {
+            tableRowsToRender = tableRowsToRender.filter(r => r.tipe === filterType);
+        }
+
+        if (sortBy === "name_asc") {
+            tableRowsToRender.sort((a, b) => a.sortKeyName.localeCompare(b.sortKeyName));
+        } else if (sortBy === "saldo_desc") {
+            tableRowsToRender.sort((a, b) => b.sisaSaldo - a.sisaSaldo);
+        } else if (sortBy === "piutang_desc") {
+            tableRowsToRender.sort((a, b) => b.piutang - a.piutang);
+        }
+
+        if (tableRowsToRender.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 25px; color: var(--text-muted);">Tidak ada data sesuai filter.</td></tr>`;
+            return;
+        }
+
+        tableRowsToRender.forEach((row, idx) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align: center; vertical-align: middle;">${idx + 1}</td>
+                    <td style="vertical-align: middle;"><b>${row.name}</b><br><small style="color:#64748b;">WA: ${row.wa}</small><br><small style="color:#64748b;">IDPEL: ${row.idpel}</small></td>
+                    <td style="text-align: center; vertical-align: middle;"><span style="padding: 2px 6px; border-radius: 4px; font-size: 9.5px; font-weight: 700; background: ${row.tipe === 'LISTRIK' ? '#dcfce7; color: #166534;' : '#e0f2fe; color: #0369a1;'};">${row.tipe}</span></td>
+                    <td style="vertical-align: middle; padding: 6px;">${row.orderDetailHtml}</td>
+                    <td style="text-align: right; vertical-align: middle; color: ${row.piutang > 0 ? '#ef4444' : '#1e293b'}; font-weight: ${row.piutang > 0 ? '700' : '400'};">Rp ${row.piutang.toLocaleString('id-ID')}</td>
+                    <td style="text-align: right; vertical-align: middle;">${row.tagihanPln}</td>
+                    <td style="text-align: right; vertical-align: middle;">Rp ${row.saldoTitipan.toLocaleString('id-ID')}</td>
+                    <td style="text-align: right; vertical-align: middle; font-weight: 700; color: ${row.sisaSaldo >= 0 ? '#03ac0c' : '#ef4444'};">Rp ${row.sisaSaldo.toLocaleString('id-ID')}</td>
+                    <td style="text-align: center; vertical-align: middle;"><span style="font-size: 9.5px; font-weight: 700; color: ${row.status === 'LUNAS / AMAN' ? '#03ac0c' : '#ef4444'};">${row.status}</span></td>
+                </tr>
+            `;
+        });
+    }
+
+    function populateCustomerDropdown() {
+        const select = document.getElementById("selectNamaPelanggan");
+        if (!select) return;
+        select.innerHTML = `<option value="">-- Pilih Pelanggan --</option>`;
+        masterCustomers.forEach(cust => {
+            select.innerHTML += `<option value="${cust.name}" data-wa="${cust.wa}">${cust.name} (${cust.wa})</option>`;
+        });
+    }
+
+    function fillCustomerData() {
+        const select = document.getElementById("selectNamaPelanggan");
+        const selectedOption = select.options[select.selectedIndex];
+        document.getElementById("noWa").value = selectedOption.getAttribute("data-wa") || "";
+    }
+
+    function renderBalanceTable() {
+        const modalBody = document.querySelector("#balanceModal .modal-body");
+        if (!modalBody) return;
+
+        let totalAllBalances = 0;
+        masterCustomers.forEach(cust => {
+            let custBal = 0;
+            globalBalances.filter(b => b.namaPelanggan === cust.name).forEach(b => {
+                if (b.jenisMutasi === "MASUK") custBal += b.jumlah;
+                else if (b.jenisMutasi === "KELUAR") custBal -= b.jumlah;
+            });
+            totalAllBalances += custBal;
+        });
+
+        modalBody.innerHTML = `
+            <div style="background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; padding: 14px 16px; border-radius: 12px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2);">
+                <div>
+                    <div style="font-size: 11px; opacity: 0.9; font-weight: 500;">TOTAL SALDO TITIPAN KESELURUHAN</div>
+                    <div style="font-size: 18px; font-weight: 700; margin-top: 2px;">Rp ${totalAllBalances.toLocaleString('id-ID')}</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 8px 12px; border-radius: 8px; font-size: 11px; font-weight: 600;">
+                    <i class="fa-solid fa-users"></i> ${masterCustomers.length} Pelanggan
+                </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <input type="text" id="searchBalanceInput" placeholder="🔍 Cari nama pelanggan..." onkeyup="filterBalanceList()" style="width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 12px; outline: none;">
+            </div>
+
+            <div id="balanceListContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+        `;
+
+        renderBalanceListItems(masterCustomers);
+        document.getElementById("statTotalSaldo").innerText = "Rp " + totalAllBalances.toLocaleString('id-ID');
+        document.getElementById("balanceModal").style.display = "flex";
+    }
+
+    function renderBalanceListItems(customersToRender) {
+        const container = document.getElementById("balanceListContainer");
+        if (!container) return;
+        container.innerHTML = "";
+
+        if (customersToRender.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px; font-size: 12px;">Pelanggan tidak ditemukan.</div>`;
+            return;
+        }
+
+        customersToRender.forEach((cust, index) => {
+            let custBalance = 0;
+            globalBalances.filter(b => b.namaPelanggan === cust.name).forEach(b => {
+                if (b.jenisMutasi === "MASUK") custBalance += b.jumlah;
+                else if (b.jenisMutasi === "KELUAR") custBalance -= b.jumlah;
+            });
+
+            let waNumber = cust.wa ? cust.wa.replace(/^0/, '62') : "";
+            let waMsg = `Halo Kak *${cust.name}*! 😊\n\nInformasi saldo titipan Anda saat ini di ARFA Shop adalah sebesar *Rp ${custBalance.toLocaleString('id-ID')}*.\n\nTerima kasih! 🙏`;
+            let waLink = waNumber ? `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodeURIComponent(waMsg)}` : "#";
+
+            let badgeStyle = custBalance > 0 
+                ? 'background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;' 
+                : 'background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1;';
+
+            container.innerHTML += `
+                <div style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <b style="font-size: 13px; color: var(--text-main);">${cust.name}</b>
+                        <span style="font-size: 13px; font-weight: 700; padding: 2px 8px; border-radius: 6px; ${badgeStyle}">Rp ${custBalance.toLocaleString('id-ID')}</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--text-muted); display: flex; gap: 12px;">
+                        <span>📱 WA: ${cust.wa || '-'}</span>
+                        <span>⚡ IDPEL: ${cust.idpel || '-'}</span>
+                    </div>
+                    <div style="margin-top: 4px; border-top: 1px dashed var(--border); padding-top: 6px; display: flex; justify-content: flex-end; gap: 6px;">
+                        ${cust.wa && cust.wa !== '-' ? `<a class="btn-wa" href="${waLink}" target="_blank" style="padding: 5px 10px; font-size: 11px;"><i class="fa-brands fa-whatsapp"></i> Kirim Info WA</a>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function filterBalanceList() {
+        const query = document.getElementById("searchBalanceInput").value.toLowerCase();
+        const filtered = masterCustomers.filter(c => c.name.toLowerCase().includes(query) || (c.wa && c.wa.includes(query)));
+        renderBalanceListItems(filtered);
+    }
+
+    function loadPlnTable() {
+        const tbody = document.getElementById("plnTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = "";
+        let plnCustomers = masterCustomers.filter(c => c.idpel && c.idpel !== "-");
+
+        if (plnCustomers.length === 0) {
+            tbody.innerHTML = `<tr><td style="text-align: center; color: var(--text-muted); padding: 25px;">Tidak ada pelanggan dengan IDPEL Listrik.</td></tr>`;
+            return;
+        }
+
+        const now = new Date();
+        const defaultBulan = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        
+        let existingFilterBulan = document.getElementById("filterBulanPln");
+        let selectedBulan = existingFilterBulan ? existingFilterBulan.value : defaultBulan;
+
+        tbody.innerHTML = `
+            <tr>
+                <td style="padding: 0 0 10px 0; border: none; display: block; width: 100%;">
+                    <div style="background: #eef2ff; padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                        <label style="font-size: 12px; font-weight: 700; color: var(--tokopedia-green);">Periode Bulan:</label>
+                        <input type="month" id="filterBulanPln" value="${selectedBulan}" style="padding: 6px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px;" onchange="loadPlnTable()">
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        selectedBulan = document.getElementById("filterBulanPln").value;
+
+        plnCustomers.forEach((cust, index) => {
+            let tokopediaLink = "https://www.tokopedia.com/pln?dg_value=1&section_id=352&item_order_id=5&section_name=Rekomendasi+Untukmu%21&enter_from_info=pure_digital_icon&source_module=dg_tnb_homepage_page_dg_category_icon_module&source_page_type=tnb_homepage&entrance_form=pure_digital_icon&enter_from=homepage&enter_method=&previous_page=tnb_homepage&track_id=3__topup%26bills_2&byteioTracker=";
+            
+            let existingBill = globalPlnBills.find(b => b.namaPelanggan === cust.name && b.bulan === selectedBulan);
+            let savedNominal = existingBill ? existingBill.nominal : "";
+
+            tbody.innerHTML += `
+                <tr>
+                    <td style="padding: 6px 0; border: none; display: block; width: 100%;">
+                        <div style="background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; width: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <b style="font-size: 13px; color: var(--text-main);">${index + 1}. ${cust.name}</b>
+                                <a href="${tokopediaLink}" target="_blank" class="btn-action" style="padding: 4px 10px; font-size: 11px; background: #03ac0c; text-decoration: none;" onclick="copyIdpelAndOpen(event, '${cust.idpel}', '${tokopediaLink}')"><i class="fa-solid fa-external-link-alt"></i> Cek Tokopedia</a>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                ⚡ IDPEL: <b>${cust.idpel}</b> (${cust.namaPemilikIdpel || cust.name})
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-muted);">
+                                📱 WA: ${cust.wa}
+                            </div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 4px; border-top: 1px dashed var(--border); padding-top: 8px;">
+                                <textarea id="rawInvoice_${index}" placeholder="Tempel teks rincian Tokopedia di sini..." style="padding: 8px; width: 100%; border: 1.5px solid var(--border); border-radius: 6px; font-size: 11px; height: 55px; resize: none;"></textarea>
+                                
+                                <div style="display: flex; gap: 6px; align-items: center;">
+                                    <input type="number" id="tagihanInput_${index}" value="${savedNominal}" placeholder="Total Tagihan (Rp)" style="padding: 7px; width: 130px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--tokopedia-green);" readonly>
+                                    
+                                    <button class="btn-action" style="padding: 8px 14px; font-size: 12px; background: #03ac0c; width: 100%; justify-content: center;" onclick="parseAndSavePlnInvoice(${index}, '${cust.name}', '${cust.wa}', '${cust.idpel}', '${cust.namaPemilikIdpel || cust.name}')"><i class="fa-solid fa-wand-magic-sparkles"></i> Parse & Simpan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function parseAndSavePlnInvoice(index, name, wa, idpel, pemilik) {
+        const rawText = document.getElementById(`rawInvoice_${index}`).value;
+        if (!rawText.trim()) {
+            showToast("Kotak teks masih kosong! Tempel teks Tokopedia dulu.", "error");
+            return;
+        }
+
+        try {
+            let rpPln = 0;
+            let adminFee = 3800;
+            let blTh = "-";
+            let tarifDaya = "-";
+            let standMeter = "-";
+            let jatuhTempo = "-";
+
+            let lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+            
+            for (let i = 0; i < lines.length; i++) {
+                let lineUpper = lines[i].toUpperCase();
+                let nextVal = lines[i+1] ? lines[i+1] : "";
+
+                if (lineUpper.includes("RP TAG PLN") || lineUpper === "TAGIHAN") {
+                    let cleanNum = nextVal.replace(/[^0-9]/g, '');
+                    if (!cleanNum && lines[i].includes("Rp")) {
+                        cleanNum = lines[i].replace(/[^0-9]/g, '');
+                    }
+                    if (cleanNum) rpPln = parseFloat(cleanNum);
+                }
+                if (lineUpper.includes("BIAYA ADMIN")) {
+                    let cleanAdmin = nextVal.replace(/[^0-9]/g, '');
+                    if (cleanAdmin) adminFee = parseFloat(cleanAdmin);
+                }
+                if (lineUpper === "BL/TH" || lineUpper.includes("BL/TH")) blTh = nextVal;
+                if (lineUpper.includes("TARIF/DAYA")) tarifDaya = nextVal;
+                if (lineUpper.includes("STAND METER")) standMeter = nextVal;
+                if (lineUpper.includes("JATUH TEMPO")) jatuhTempo = nextVal;
+            }
+
+            let totalTagihanFinal = rpPln + adminFee;
+            if (totalTagihanFinal <= 3800) totalTagihanFinal = rpPln > 0 ? rpPln + 3800 : 0;
+
+            const bulan = document.getElementById("filterBulanPln").value;
+
+            let existingIdx = globalPlnBills.findIndex(b => b.namaPelanggan === name && b.bulan === bulan);
+            if (existingIdx >= 0) {
+                globalPlnBills[existingIdx].nominal = totalTagihanFinal;
+            } else {
+                globalPlnBills.push({ bulan: bulan, namaPelanggan: name, idpel: idpel, nominal: totalTagihanFinal });
+            }
+            syncToCloud(); // Simpan otomatis ke cloud & local
+
+            document.getElementById(`tagihanInput_${index}`).value = totalTagihanFinal;
+            showToast("Tagihan PLN berhasil disimpan!", "success");
+
+            openInvoiceModal(name, wa, idpel, pemilik, blTh, tarifDaya, standMeter, jatuhTempo, rpPln, adminFee, totalTagihanFinal);
+        } catch (err) {
+            console.error(err);
+            showToast("Format teks tidak dikenali.", "error");
+        }
+    }
+
+    function getCalculatedNet() {
+        const hargaSatuan = parseFloat(document.getElementById("hargaSatuan").value) || 0;
+        const qty = parseInt(document.getElementById("qty").value) || 1;
+        const diskon = parseFloat(document.getElementById("diskon").value) || 0;
+        const ongkir = parseFloat(document.getElementById("ongkir").value) || 0;
+        return (hargaSatuan * qty) * (1 - diskon / 100) + ongkir;
+    }
+
+    function calculateNet() { if (document.getElementById("sistemBayar").value === "KREDIT") updateCreditSummary(); }
+    function toggleCreditOptions() {
+        const sistem = document.getElementById("sistemBayar").value;
+        document.getElementById("creditPanel").style.display = sistem === "KREDIT" ? "block" : "none";
+        if (sistem === "KREDIT") generateInstallmentInputs();
+    }
+    function generateInstallmentInputs() {
+        const count = parseInt(document.getElementById("jumlahCicilan").value) || 3;
+        const container = document.getElementById("installmentContainer");
+        container.innerHTML = "";
+        for (let i = 1; i <= count; i++) {
+            container.innerHTML += `<div class="input-group"><label>Bayar ${i} (Rp)</label><input type="number" class="installment-input" value="0" oninput="updateCreditSummary()"></div>`;
+        }
+        updateCreditSummary();
+    }
+    function updateCreditSummary() {
+        const net = getCalculatedNet();
+        document.getElementById("summaryNet").innerText = "Rp " + net.toLocaleString('id-ID');
+        let totalPaid = 0;
+        document.querySelectorAll(".installment-input").forEach(input => { totalPaid += parseFloat(input.value) || 0; });
+        document.getElementById("summaryPaid").innerText = "Rp " + totalPaid.toLocaleString('id-ID');
+        document.getElementById("summaryRemaining").innerText = "Rp " + Math.max(0, net - totalPaid).toLocaleString('id-ID');
+    }
+
+    function updateDashboardStats(orders) {
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        document.getElementById("statOmsetMonth").innerText = `Omset ${monthNames[currentMonth]}`;
+
+        let currentMonthOmset = 0, totalKreditPiutang = 0, belumLunasCount = 0;
+        orders.forEach(o => {
+            if (o.tglTransfer && new Date(o.tglTransfer).getMonth() === currentMonth && new Date(o.tglTransfer).getFullYear() === currentYear) {
+                currentMonthOmset += o.hargaNet || 0;
+            }
+            if (o.statusBayar === "BELUM LUNAS") {
+                totalKreditPiutang += o.remaining || 0;
+                belumLunasCount++;
+            }
+        });
+
+        let totalAllBalances = 0;
+        if (masterCustomers.length > 0 && globalBalances.length >= 0) {
+            masterCustomers.forEach(cust => {
+                let custBal = 0;
+                globalBalances.filter(b => b.namaPelanggan === cust.name).forEach(b => {
+                    if (b.jenisMutasi === "MASUK") custBal += b.jumlah;
+                    else if (b.jenisMutasi === "KELUAR") custBal -= b.jumlah;
+                });
+                totalAllBalances += custBal;
+            });
+        }
+
+        document.getElementById("statOmset").innerText = "Rp " + currentMonthOmset.toLocaleString('id-ID');
+        document.getElementById("statBelumLunas").innerText = "Rp " + totalKreditPiutang.toLocaleString('id-ID');
+        document.getElementById("statBelumLunasCount").innerText = `${belumLunasCount} Order belum lunas`;
+        document.getElementById("statTotalSaldo").innerText = "Rp " + totalAllBalances.toLocaleString('id-ID');
+    }
+
+    const orderFormEl = document.getElementById("orderForm");
+    if (orderFormEl) {
+        orderFormEl.addEventListener("submit", function(e) {
+            e.preventDefault();
+            let selectEl = document.getElementById("selectNamaPelanggan");
+            let namaPemesanFinal = `${selectEl.value} (WA:${document.getElementById("noWa").value.trim()})`;
+
+            const netVal = getCalculatedNet();
+            const orderData = {
+                tglTransfer: document.getElementById("tglTransfer").value,
+                noOrder: document.getElementById("noOrder").value,
+                namaPemesan: namaPemesanFinal,
+                detailItem: document.getElementById("detailItem").value,
+                warna: document.getElementById("warna").value || "-",
+                size: document.getElementById("size").value || "-",
+                qty: parseInt(document.getElementById("qty").value),
+                brand: document.getElementById("brand").value || "-",
+                hargaSatuan: parseFloat(document.getElementById("hargaSatuan").value),
+                totalHarga: parseFloat(document.getElementById("hargaSatuan").value) * parseInt(document.getElementById("qty").value),
+                diskon: parseFloat(document.getElementById("diskon").value) || 0,
+                ongkir: parseFloat(document.getElementById("ongkir").value) || 0,
+                hargaNet: netVal,
+                sistemBayar: document.getElementById("sistemBayar").value,
+                tglJatuhTempo: document.getElementById("tglJatuhTempo").value || "-",
+                remaining: document.getElementById("sistemBayar").value === "KREDIT" ? Math.max(0, netVal - Array.from(document.querySelectorAll(".installment-input")).reduce((sum, i) => sum + (parseFloat(i.value) || 0), 0)) : 0,
+                statusBayar: document.getElementById("sistemBayar").value === "CASH" ? "LUNAS" : (netVal <= Array.from(document.querySelectorAll(".installment-input")).reduce((sum, i) => sum + (parseFloat(i.value) || 0), 0) ? "LUNAS" : "BELUM LUNAS")
+            };
+
+            globalOrders.push(orderData);
+            syncToCloud(); // Simpan otomatis ke cloud & local
+
+            showToast("Pesanan berhasil disimpan!", "success");
+            this.reset(); document.getElementById("qty").value = "1";
+            toggleCreditOptions(); closeInputModal();
+            updateDashboardStats(globalOrders);
+        });
+    }
+
+    function openInvoiceModal(name, wa, idpel, pemilik, blTh, tarifDaya, standMeter, jatuhTempo, rpPln, adminFee, totalTagihan) {
+        activeShareData.wa = wa;
+        activeShareData.text = `*STRUK PEMBAYARAN TAGIHAN LISTRIK PLN* ⚡\n` +
+            `----------------------------------\n` +
+            `👤 Nama: *${pemilik}*\n` +
+            `⚡ IDPEL: *${idpel}*\n` +
+            `📅 Periode (BL/TH): *${blTh}*\n` +
+            `💡 Tarif / Daya: *${tarifDaya}*\n` +
+            `🔢 Stand Meter: *${standMeter}*\n` +
+            `⏳ Jatuh Tempo: *${jatuhTempo}*\n` +
+            `----------------------------------\n` +
+            `💰 Tagihan PLN: Rp ${rpPln.toLocaleString('id-ID')}\n` +
+            `🛠 Biaya Admin: Rp ${adminFee.toLocaleString('id-ID')}\n` +
+            `----------------------------------\n` +
+            `🔥 *TOTAL PEMBAYARAN: Rp ${totalTagihan.toLocaleString('id-ID')}*\n` +
+            `----------------------------------\n` +
+            `Struk ini adalah bukti pembayaran yang sah. Call Center: 123 / PLN Mobile. Terima kasih! 🙏`;
+
+        document.getElementById("invIdpel").innerText = idpel;
+        document.getElementById("invNama").innerText = pemilik;
+        document.getElementById("invBlTh").innerText = blTh;
+        document.getElementById("invTarifDaya").innerText = tarifDaya;
+        document.getElementById("invStandMeter").innerText = standMeter;
+        document.getElementById("invJatuhTempo").innerText = jatuhTempo;
+        document.getElementById("invRpPln").innerText = `Rp ${rpPln.toLocaleString('id-ID')}`;
+        document.getElementById("invAdmin").innerText = `Rp ${adminFee.toLocaleString('id-ID')}`;
+        document.getElementById("invTotal").innerText = `Rp ${totalTagihan.toLocaleString('id-ID')}`;
+
+        document.getElementById("btnDownloadJpg").style.display = "flex";
+        document.getElementById("waActionButtons").style.display = "none";
+        document.getElementById("invoicePreviewModal").style.display = "flex";
+    }
+
+    function closeInvoiceModal() {
+        document.getElementById("invoicePreviewModal").style.display = "none";
+    }
+
+    async function downloadInvoiceJpg() {
+        const captureElement = document.getElementById("invoiceCardToCapture");
+        showToast("Menyimpan struk resmi JPG...", "success");
+
+        try {
+            const canvas = await html2canvas(captureElement, { scale: 2, backgroundColor: "#ffffff" });
+            canvas.toBlob((blob) => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `Struk_PLN_${Date.now()}.jpg`;
+                link.click();
+
+                showToast("Struk JPG berhasil diunduh!", "success");
+                document.getElementById("btnDownloadJpg").style.display = "none";
+                document.getElementById("waActionButtons").style.display = "flex";
+            }, 'image/jpeg', 0.95);
+        } catch (error) {
+            console.error(error);
+            showToast("Gagal memproses struk PLN!", "error");
+        }
+    }
+
+    function sendWaMessage(type) {
+        let waNumber = activeShareData.wa.replace(/^0/, '62');
+        let encodedText = encodeURIComponent(activeShareData.text);
+        let waUrl = type === 'business' 
+            ? `https://wa.me/${waNumber}?text=${encodedText}` 
+            : `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodedText}`;
+
+        window.open(waUrl, '_blank');
+        closeInvoiceModal();
+    }
+
+    function copyIdpelAndOpen(event, idpel, url) {
+        event.preventDefault();
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(idpel).then(() => {
+                showToast(`IDPEL ${idpel} berhasil disalin! Silakan tempel di Tokopedia.`, "success");
+            }).catch(() => {
+                fallbackCopyTextToClipboard(idpel);
+            });
+        } else {
+            fallbackCopyTextToCalibration(idpel);
+        }
+        setTimeout(() => { window.open(url, '_blank'); }, 400);
+    }
+
+    function fallbackCopyTextToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(textArea);
+    }
+	
+	function exportBackupJson() {
+    const backupData = {
+        customers: masterCustomers,
+        orders: globalOrders,
+        balances: globalBalances,
+        plnBills: globalPlnBills,
+        backupDate: new Date().toISOString()
+    };
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `ARFA_SHOP_BACKUP_${new Date().toISOString().split('T')[0]}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+    showToast("Backup JSON berhasil diunduh!", "success");
+}
+
+function importBackupJson(event) {
+    const fileReader = new FileReader();
+    if(event.target.files[0]) {
+        fileReader.readAsText(event.target.files[0], "UTF-8");
+        fileReader.onload = function(e) {
+            try {
+                const imported = JSON.parse(e.target.result);
+                masterCustomers = imported.customers || [];
+                globalOrders = imported.orders || [];
+                globalBalances = imported.balances || [];
+                globalPlnBills = imported.plnBills || [];
+                syncToCloud(); // Kirim ke cloud & simpan lokal
+                showToast("Data berhasil direstore dari file cadangan!", "success");
+                setTimeout(() => location.reload(), 1500);
+            } catch (error) {
+                showToast("Format file JSON tidak valid!", "error");
+            }
+        };
+    }
+}
+	let globalLogs = JSON.parse(localStorage.getItem("arfa_logs")) || [];
+
+function addLog(actionText) {
+    const timeStr = new Date().toLocaleString('id-ID');
+    globalLogs.unshift({ time: timeStr, desc: actionText }); // Masukkan ke urutan paling atas
+    if (globalLogs.length > 50) globalLogs.pop(); // Batasi maksimal 50 log terakhir
+    localStorage.setItem("arfa_logs", JSON.stringify(globalLogs));
+}
+	
+async function pickContactFromPhone() {
+    // Cek apakah browser mendukung fitur Contact Picker
+    if ('contacts' in navigator && 'Picker' in window) {
+        const supportedProperties = await navigator.contacts.getProperties();
+        if (supportedProperties.includes('tel')) {
+            try {
+                const contacts = await navigator.contacts.select(['tel', 'name'], { multiple: false });
+                if (contacts && contacts.length > 0) {
+                    let phone = contacts[0].tel[0] || "";
+                    // Rapikan format nomor (ubah +62 jadi 0 atau sesuaikan)
+                    phone = phone.replace(/[^0-9+]/g, '');
+                    document.getElementById("newCustWa").value = phone;
+                    showToast("Nomor kontak berhasil dipilih!", "success");
+                }
+            } catch (ex) {
+                console.error("Gagal memilih kontak:", ex);
+                showToast("Akses kontak dibatalkan atau tidak diizinkan.", "error");
+            }
+        } else {
+            showToast("Fitur pilih nomor telepon tidak didukung di perangkat ini.", "error");
+        }
+    } else {
+        showToast("Browser Anda belum mendukung pemilih kontak otomatis. Ketik manual ya.", "error");
+    }
+}	
+	
+</script>
+
+</body>
+</html>
